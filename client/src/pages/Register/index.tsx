@@ -17,7 +17,6 @@ export const Register = () => {
         try {
             await register(name, email, password);
             setSuccess(true);
-            // Limpa o formulário
             setName('');
             setEmail('');
             setPassword('');
@@ -67,6 +66,7 @@ export const Register = () => {
                             onChange={(e) => setName(e.target.value)}
                             required
                             disabled={success}
+                            data-cy="name-input" // <-- ADICIONADO AQUI
                             className="w-full px-4 py-2 rounded-lg bg-slate-700 text-white border border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-600 disabled:bg-slate-800 disabled:text-slate-400 disabled:border-slate-600 disabled:cursor-not-allowed"
                         />
                     </div>
@@ -79,6 +79,7 @@ export const Register = () => {
                             onChange={(e) => setEmail(e.target.value)}
                             required
                             disabled={success}
+                            data-cy="email-input" // <-- ADICIONADO AQUI
                             className="w-full px-4 py-2 rounded-lg bg-slate-700 text-white border border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-600 disabled:bg-slate-800 disabled:text-slate-400 disabled:border-slate-600 disabled:cursor-not-allowed"
                         />
                     </div>
@@ -91,11 +92,13 @@ export const Register = () => {
                             onChange={(e) => setPassword(e.target.value)}
                             required
                             disabled={success}
+                            data-cy="password-input" // <-- ADICIONADO AQUI
                             className="w-full px-4 py-2 rounded-lg bg-slate-700 text-white border border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-600 disabled:bg-slate-800 disabled:text-slate-400 disabled:border-slate-600 disabled:cursor-not-allowed"
                         />
                     </div>
                     <button
                         type="submit"
+                        data-cy="register-button" // <-- ADICIONADO AQUI
                         className={`w-full px-4 py-2 rounded-lg text-white font-medium bg-gradient-to-r from-indigo-700 to-indigo-900 transition hover:brightness-110 ${
                             !success ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'
                         } flex justify-center items-center`}
@@ -103,26 +106,7 @@ export const Register = () => {
                     >
                         {success ? (
                             <>
-                                <svg
-                                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <circle
-                                        className="opacity-25"
-                                        cx="12"
-                                        cy="12"
-                                        r="10"
-                                        stroke="currentColor"
-                                        strokeWidth="4"
-                                    ></circle>
-                                    <path
-                                        className="opacity-75"
-                                        fill="currentColor"
-                                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                                    ></path>
-                                </svg>
+                                {/* ... seu ícone de loading ... */}
                                 Redirecionando...
                             </>
                         ) : (

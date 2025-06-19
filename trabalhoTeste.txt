@@ -1,0 +1,74 @@
+1
+Erro ao buscar tarefa de outro usuário
+Verifica se o sistema impede acesso a tarefas de outros usuários.
+
+2
+Erro ao atualizar tarefa de outro usuário
+Garante que não é possível atualizar tarefas de terceiros.
+
+3
+Erro ao deletar tarefa de outro usuário
+Testa se o sistema bloqueia a exclusão de tarefas alheias.
+
+4
+Criação de tarefa com prioridade inválida
+Confirma que uma prioridade inválida resulta em priority nula.
+
+5
+Busca de tarefas em usuário sem nenhuma
+Garante que a resposta seja um array vazio quando o usuário não tem tarefas.
+
+6
+Erro ao criar tarefa com título vazio
+Valida que um título vazio gera erro de nome inválido.
+
+7
+Erro ao atualizar tarefa com título que começa com número
+Verifica se o título iniciando por número é considerado inválido.
+
+8
+Filtro de tarefas por status "não concluído"
+Testa se o filtro retorna apenas tarefas ainda não concluídas.
+
+9
+Atualização apenas do status completed de uma tarefa
+Garante que apenas o status completed seja alterado corretamente.
+
+10
+Erro ao deletar tarefa com ID inexistente
+Verifica se o sistema lança erro ao tentar deletar uma tarefa que não existe.
+
+11
+Erro ao cadastrar usuário com e-mail já existente
+Impede o registro de um usuário se o e-mail já estiver em uso.
+
+12
+Erro ao fazer login com e-mail inexistente
+Garante que o login falhe se o e-mail informado não estiver cadastrado.
+
+13
+Erro ao fazer login com senha incorreta
+Verifica se o sistema bloqueia o login com senha errada, mesmo com e-mail válido.
+
+14
+Erro ao registrar com e-mail em formato inválido
+Impede o cadastro quando o e-mail não segue um formato válido.
+
+15
+Erro ao registrar com senha muito curta
+Garante que a senha tenha ao menos 6 caracteres para permitir o registro.
+
+Teste de integração 
+
+1 deve retornar a lista de tarefas do usuário autenticado
+
+2 deve deletar uma tarefa existente do usuário autenticado
+
+
+Teste E2E 
+
+1 Criação de Usuário 
+2 deleção de tarefa - não esta funcionando 
+
+
+Link GIT - https://github.com/clainerhenrique/trabalho-testes
