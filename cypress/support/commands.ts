@@ -19,12 +19,34 @@ Cypress.Commands.add('login', (email: string, password: string) => {
     });
 });
 
+// --- ADICIONADO ---
+Cypress.Commands.add('createTask', (title: string) => {
+    // Pega o token que o comando cy.login() salvou
+    const authToken = window.localStorage.getItem('token');
+
+    cy.request({
+        method: 'POST',
+        url: `${Cypress.env('apiUrl')}/tasks`, // Usa a variável de ambiente da API
+        headers: {
+            Authorization: `Bearer ${authToken}`,
+        },
+        body: {
+            title: title,
+            description: 'Criada pelo teste E2E',
+        },
+    });
+});
+
+
 declare global {
     namespace Cypress {
         interface Chainable {
             resetDatabase(): Chainable<void>;
             registerUser(user: { name: string; email: string; password: string }): Chainable<void>;
             login(email: string, password: string): Chainable<void>;
+            
+            createTask(title: string): Chainable<void>;
+            
         }
     }
 }

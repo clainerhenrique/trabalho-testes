@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { JWT_SECRET } from '../config';
+// Supondo que você tenha um arquivo de configuração para o segredo do JWT
+import { JWT_SECRET } from '../config'; 
 import { InvalidCredentialsError } from '../errors/auth/InvalidCredentialsError';
 import { InvalidTokenError } from '../errors/auth/InvalidTokenError';
 import { UserAlreadyRegisteredError } from '../errors/auth/UserAlreadyRegisteredError';
@@ -11,6 +12,23 @@ const TOKEN_EXPIRATION = '1h';
 
 export class AuthService {
     static async registerUser(email: string, password: string, name: string) {
+        // --- INÍCIO DAS VALIDAÇÕES ADICIONADAS ---
+
+        // Validação do formato do e-mail usando regex
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            // Lança um erro que o nosso teste espera
+            throw new Error('Formato de e-mail inválido');
+        }
+
+        // Validação do comprimento da senha
+        if (password.length < 6) {
+            // Lança um erro que o nosso teste espera
+            throw new Error('A senha deve ter pelo menos 6 caracteres');
+        }
+
+        // --- FIM DAS VALIDAÇÕES ADICIONADAS ---
+
         const existingUser = await prisma.user.findUnique({ where: { email } });
         if (existingUser) {
             throw new UserAlreadyRegisteredError();

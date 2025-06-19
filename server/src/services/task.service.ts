@@ -12,16 +12,31 @@ export class TaskService {
             priority?: string;
         },
     ) {
-        if (/^\d/.test(data.title)) {
+        // Validação de título vazio ou começando com número
+        if (!data.title || /^\d/.test(data.title)) {
             throw new InvalidTaskNameError();
         }
+
+        // --- LÓGICA DE DATA ADICIONADA AQUI ---
+        if (data.dueDate) {
+            const dueDate = new Date(data.dueDate);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Zera as horas para comparar apenas as datas
+
+            if (dueDate < today) {
+                throw new Error('A data de vencimento não pode ser no passado');
+            }
+        }
+
+        const validPriorities = ['low', 'medium', 'high'];
+        const priority = data.priority && validPriorities.includes(data.priority) ? data.priority : null;
 
         const task = await prisma.task.create({
             data: {
                 title: data.title,
                 description: data.description,
                 dueDate: data.dueDate ? new Date(data.dueDate) : null,
-                priority: data.priority,
+                priority: priority,
                 userId,
             },
         });
@@ -67,23 +82,49 @@ export class TaskService {
             priority?: string;
         },
     ) {
-        const updatedTask = await prisma.task.update({
-            where: { id, userId },
-            data: {
-                title: data.title,
-                description: data.description,
-                completed: data.completed,
-                dueDate: data.dueDate ? new Date(data.dueDate) : null,
-                priority: data.priority,
-            },
-        });
+        // Validação de título na atualização
+        if (data.title !== undefined) {
+            if (!data.title || /^\d/.test(data.title)) {
+                throw new InvalidTaskNameError();
+            }
+        }
 
-        return updatedTask;
+        // Validação de data na atualização
+        if (data.dueDate) {
+            const dueDate = new Date(data.dueDate);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (dueDate < today) {
+                throw new Error('A data de vencimento não pode ser no passado');
+            }
+        }
+
+        try {
+            const updatedTask = await prisma.task.update({
+                where: { id, userId },
+                data: {
+                    title: data.title,
+                    description: data.description,
+                    completed: data.completed,
+                    dueDate: data.dueDate ? new Date(data.dueDate) : undefined,
+                    priority: data.priority,
+                },
+            });
+
+            return updatedTask;
+        } catch (error) {
+            throw new TaskNotFoundError();
+        }
     }
 
     static async deleteTask(userId: number, id: number) {
-        await prisma.task.delete({
-            where: { id, userId },
-        });
+        try {
+            await prisma.task.delete({
+                where: { id, userId },
+            });
+        } catch (error) {
+            throw new TaskNotFoundError();
+        }
     }
 }

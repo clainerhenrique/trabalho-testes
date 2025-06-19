@@ -18,7 +18,7 @@ describe('AuthController', () => {
             // Arrange (preparar)
             const userData = {
                 email: 'usuario@valido.teste',
-                password: 'senha',
+                password: 'senha-valida',
                 name: 'Usuário Válido',
             };
 

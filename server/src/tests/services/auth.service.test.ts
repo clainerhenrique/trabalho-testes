@@ -21,8 +21,9 @@ describe('AuthService', () => {
         name: 'Usuário Exemplo',
         createdAt: new Date(),
     };
-    const password = 'senha';
+    
     const hashedPassword = 'senha-criptografada';
+    const password = 'senha-valida';
 
     afterEach(() => {
         jest.clearAllMocks();
@@ -135,4 +136,66 @@ describe('AuthService', () => {
             expect(newToken).toBe('tokenNovo');
         });
     });
+
+
+    describe('AuthService - Testes adicionais', () => {
+        const emailExistente = 'usuario@exemplo.teste';
+      
+        it('não deve cadastrar usuário se e-mail já estiver em uso', async () => {
+          (prisma.user.findUnique as jest.MockedFunction<any>).mockResolvedValue({
+            id: 1,
+            email: emailExistente,
+            name: 'Usuário',
+            password: 'senha-criptografada',
+            createdAt: new Date(),
+          });
+      
+          await expect(
+            AuthService.registerUser(emailExistente, '123456', 'Usuário')
+        ).rejects.toThrow('Usuário já cadastrado');
+    });
+
+    
+    describe('AuthService - Cenários de Falha e Validação', () => {
+
+        const emailInexistente = 'naoexiste@exemplo.com';
+        const senhaCorreta = 'senha';
+        const senhaIncorreta = 'senha-errada';
+
+        it('deve lançar erro ao tentar fazer login com um e-mail que não existe', async () => {
+            // Arrange
+            (prisma.user.findUnique as jest.Mock).mockResolvedValue(null);
+    
+            // Act & Assert
+            await expect(AuthService.loginUser(emailInexistente, senhaCorreta)).rejects.toThrow('Credenciais inválidas');
+        });
+    
+        it('deve lançar erro ao tentar fazer login com a senha incorreta', async () => {
+            // Arrange
+            (prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser);
+            (bcrypt.compare as jest.Mock).mockResolvedValue(false); // A senha não bate
+    
+            // Act & Assert
+            await expect(AuthService.loginUser(mockUser.email, senhaIncorreta)).rejects.toThrow('Credenciais inválidas');
+        });
+    
+        it('deve lançar erro ao tentar registrar com um formato de e-mail inválido', async () => {
+            // Arrange
+            const emailInvalido = 'email-invalido';
+            
+            // Act & Assert
+            // Este teste espera que a validação esteja no serviço.
+            await expect(AuthService.registerUser(emailInvalido, senhaCorreta, 'Nome')).rejects.toThrow('Formato de e-mail inválido');
+        });
+    
+        it('deve lançar erro ao tentar registrar com uma senha muito curta', async () => {
+            // Arrange
+            const senhaCurta = '123';
+    
+            // Act & Assert
+            await expect(AuthService.registerUser(mockUser.email, senhaCurta, 'Nome')).rejects.toThrow('A senha deve ter pelo menos 6 caracteres');
+        });
+    
+    });
+});
 });
